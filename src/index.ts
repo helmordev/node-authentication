@@ -2,6 +2,7 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { auth } from "./lib/auth";
 import { PORT } from "./config/env";
+import { errorHandlerMiddleware } from "./middlewares/error-handler";
 import { Context } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
@@ -22,6 +23,7 @@ app.use(
     maxAge: 600,
   }),
 );
+app.onError(errorHandlerMiddleware);
 
 app.on(["POST", "GET"], "/api/auth/**", (c: Context) =>
   auth.handler(c.req.raw),
